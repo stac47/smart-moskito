@@ -1,0 +1,23 @@
+{
+  "name": "smart-moskito-ui",
+  "homepage": "https://github.com/stac47/smart-moskito",
+  "authors": [
+    "Laurent Stacul <laurent.stacul@gmail.com>"
+  ],
+  "description": "GUI of smart-moskito",
+  "main": "",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "bootstrap": "^3.3.7",
+    "jquery-colorbox": "^1.6.4"
+  }
+}
