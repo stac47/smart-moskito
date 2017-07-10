@@ -7,6 +7,31 @@
 	<title>Smart Moskito</title>
 </head>
 <body>
- 	<h1>Hello World</h1>
+  <h1>Album: {{ album.title }}</h1>
+  {% if album.parent %}
+  <p>
+    <a href="{{ url_for('display_album', title=album.parent.title) }}">
+      {{ album.parent.title }}
+    </a>
+  </p>
+  {% endif %}
+  {% if album.albums %}
+  <h2>Children albums</h2>
+  <ul>
+    {% for child_album in album.albums %}
+    <li>
+      <a href="{{ url_for('display_album', title=child_album.title) }}">
+        {{ child_album.title }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  <h2>Photos</h2>
+  <ul>
+    {% for picture in album.pictures %}
+    <li>{{ picture.title }}</li>
+    {% endfor %}
+  </ul>
 </body>
 </html>
