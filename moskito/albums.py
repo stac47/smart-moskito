@@ -68,6 +68,15 @@ class Album(AlbumItem):
     def add_picture(self, picture):
         self.pictures.append(picture)
 
+    def get_picture(self, picture_title):
+        pictures = list(filter(lambda pic: pic.title == picture_title,
+                               self.pictures))
+        if not pictures:
+            pass #Raise an error
+        if len(pictures) > 1:
+            pass # raise an error
+        return pictures[0]
+
     def is_root(self):
         return self.parent == None
 
