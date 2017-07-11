@@ -2,6 +2,7 @@
 <html>
 <head>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bower_components/jquery-colorbox/example1/colorbox.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='moskito.css') }}">
   <title>Smart Moskito</title>
 </head>
@@ -61,7 +62,7 @@
       {% for picture in album.pictures %}
       <div class="col-xs-6 col-md-3">
         <div class="thumbnail">
-          <a href="{{ url_for('display_picture', album_title=album.title, picture_title=picture.title) }}">
+          <a href="{{ url_for('display_picture', album_title=album.title, picture_title=picture.title) }}" class="gallery">
             <img src="{{ url_for('display_picture', album_title=album.title, picture_title=picture.title) }}" />
           </a>
         </div>
@@ -71,5 +72,6 @@
   </div><!-- /.container -->
   <script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
   <script src="{{ url_for('static', filename='bower_components/jquery-colorbox/jquery.colorbox-min.js') }}"></script>
+  <script src="{{ url_for('static', filename='moskito.js') }}"></script>
 </body>
 </html>
