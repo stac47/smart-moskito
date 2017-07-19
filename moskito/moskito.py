@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
+from zipfile import ZipFile
+
 from flask import Flask, render_template, send_file
 from PIL import Image
 
@@ -28,9 +30,9 @@ def display_root_album():
     return display_album(root_album.title)
 
 
-@app.route('/album/<title>')
-def display_album(title):
-    album = AlbumsRepository.get_album_by_tile(title)
+@app.route('/album/<album_title>')
+def display_album(album_title):
+    album = AlbumsRepository.get_album_by_tile(album_title)
     return render_template('base.html', album=album)
 
 
@@ -66,3 +68,20 @@ def display_thumbnail(album_title, picture_title):
                         str(thumbnail_path))
     return send_file(str(thumbnail_path), mimetype='image/jpeg')
 
+
+@app.route('/album/<album_title>/download')
+def download_album(album_title):
+    zip_folder = get_moskito_folder() / 'zip'
+    if not zip_folder.exists():
+        zip_folder.mkdir()
+    album = AlbumsRepository.get_album_by_tile(album_title)
+    zip_file_path = zip_folder / (album.path.name + '.zip')
+    if not zip_file_path.exists():
+        with ZipFile(str(zip_file_path), 'w') as zip_file:
+            for path in album.path.iterdir():
+                if path.is_file() and path.suffixes \
+                    and path.suffixes[-1] in ('.jpg,'):
+                        zip_file.write(str(path), arcname=path.name)
+    return send_file(str(zip_file_path), 'application/zip')
+
+    
