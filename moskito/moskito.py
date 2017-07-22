@@ -4,7 +4,8 @@
 from pathlib import Path
 from zipfile import ZipFile
 
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, session, request, flash,\
+                  redirect, url_for
 from PIL import Image
 
 from .albums import build_album_hierarchy, AlbumsRepository
@@ -21,19 +22,53 @@ def get_moskito_folder():
     return MOSKITO_FOLDER
 
 
+SECRET_KEY = "development key"
+MOSKITO_GALLERY_ROOT = "~/my_photos/"
+MOSKITO_PASSWORD = "mypassword"
+app.config.from_object(__name__)
+app.config.from_pyfile(get_moskito_folder() / 'moskitorc', silent=True)
+
+
 @app.route('/')
 def display_root_album():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
     if AlbumsRepository.is_empty():
-        root_album = build_album_hierarchy('/Users/stac/mes_photos/')
+        root_album = build_album_hierarchy(app.config['MOSKITO_GALLERY_ROOT'])
+        app.logger.info('Album built from %s', root_album.path)
     else:
         root_album = AlbumsRepository.get_root_album()
     return display_album(root_album.title)
 
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    password = app.config['MOSKITO_PASSWORD']
+    if not password:
+        session['logged_in'] = True
+        return redirect(url_for('display_root_album'))
+    error = None
+    if request.method == 'POST':
+        if request.form['password'] != password:
+            error = 'Wrong password'
+        else:
+            session['logged_in'] = True
+            flash('You are logged in')
+            return redirect(url_for('display_root_album'))
+    return render_template('login.html', error=error)
+
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    flash('You were logged out')
+    return redirect(url_for('login'))
+
+
 @app.route('/album/<album_title>')
 def display_album(album_title):
     album = AlbumsRepository.get_album_by_tile(album_title)
-    return render_template('base.html', album=album)
+    return render_template('gallery.html', album=album)
 
 
 @app.route('/album/<album_title>/picture/<picture_title>')

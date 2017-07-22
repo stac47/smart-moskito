@@ -100,7 +100,7 @@ def fill_album(album):
 
 def build_album_hierarchy(root_folder):
     root_path = pathlib.Path(root_folder)
-    root_album = Album(root_path)
+    root_album = Album(root_path.expanduser())
     return fill_album(root_album)
 
 
